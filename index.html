@@ -7,10 +7,33 @@
     <script src="js/game.js"></script>
 </head>
 <body onkeydown="boardEvent(event)" onclick="shootByMouse(event)">
-    <p id="myScore" style="color:white; font-size: 19px; font-weight: bold">
-            Score: 
-    </p>
-    <script src="js/script.js"></script>
+    
+    <p id="score">Score : <span id="score2"></span></p>
 
+    <div id="accueil">
+        <h1>Space Invader</h1>
+        <button onclick="startGame()">Jouer</button>
+    </div>
+
+    <div id="victoire">
+        <p>Bravo !!!</p>
+        <a href="index.html">
+            <button>Next level</button>
+        </a>
+    </div>
+
+    <div id="gameover">
+        <p>Game Over !!!</p>
+        <a href="index.html">
+            <button onclick="startGame()">Rejouer</button>
+        </a>
+    </div>
+
+    <footer>
+        <p> By 3A team from Kéloumak ACS Dakar </p>
+    </footer>
+    
+    <script src="js/script.js"></script>
+    <!-- BY @!$0 -->    
 </body>
 </html>

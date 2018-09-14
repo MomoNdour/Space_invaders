@@ -1,18 +1,89 @@
-/*
-var soundFond;
-soundFond = new sound("audios/fond_sonore.mp3");
-soundFond.play();*/
 
-var vaisseau1 = new ObjectConstruct("images/vaisseau1.png", (document.body.clientWidth / 2) - 37, 550);
-var userMissile = new ObjectConstruct("images/missile.png", 0, 0);
-//myScore
-var a = document.getElementById('myScore').innerHTML
+var vaisseau1;
+var userMissile;
+var ennemie1;
+var ennemie2;
+var ennemie3;
+var ennemie4;
+var ennemie5;
+var ennemie6;
+var ennemie7;
+var ennemie8;
+var ennemie9;
+var ennemie10;
 
-userMissile.display = "none";
-//alienMissile.display = "none";
-//shootAlienMissile();
+//accueil start game
+function startGame() {
+
+    //var tir;
+    //tir = new sound("audios/fond_sonore.mp3");
+    //tir.play();
+
+        //Creation des coeurs de vie
+    var coeurs1 = new ObjectConstruct("images/coeurs.png", (document.body.clientWidth - 37), -1);
+    var coeurs2 = new ObjectConstruct("images/coeurs.png", (document.body.clientWidth - 57), -1);
+    var coeurs3 = new ObjectConstruct("images/coeurs.png", (document.body.clientWidth - 77), -1);
+
+    vaisseau1 = new ObjectConstruct("images/vaisseau1.png", (document.body.clientWidth / 2) - 37, 550);
+    userMissile = new ObjectConstruct("images/missile.png", 0, 0);
+
+    userMissile.display = "none";
+
+
+    //Creation des ennemies
+    ennemie1 = new ObjectConstruct("images/ennemie1.png", 50, 30);
+    ennemie2 = new ObjectConstruct("images/ennemie1.png", 350, 30);
+    ennemie3 = new ObjectConstruct("images/ennemie1.png", 650, 30);
+    ennemie4 = new ObjectConstruct("images/ennemie1.png", 950, 30);
+    ennemie5 = new ObjectConstruct("images/ennemie1.png", 1250, 30);
+    ennemie6 = new ObjectConstruct("images/ennemie1.png", 110, 150);
+    ennemie7 = new ObjectConstruct("images/ennemie1.png", 400, 150);
+    ennemie8 = new ObjectConstruct("images/ennemie1.png", 700, 150);
+    ennemie9 = new ObjectConstruct("images/ennemie1.png", 900, 150);
+    ennemie10 = new ObjectConstruct("images/ennemie1.png", 1200, 150);
+
+
+    for (var i = 1; i <= 10; i++) {
+        window["ennemie" + i].startAnimation(moveEnnemiToRight, 20);
+    }
+
+    document.querySelector('#accueil').style.display = "none";
+    document.querySelector('#score').style.display = "block";
+    document.querySelector('#score2').innerHTML = 0; 
+}
+
+//stop 
+function stopGame() {
+    for(var i = 1 ; i <= 10 ; i++) {
+        var alien = window["ennemie" + i];
+        alien.stopAnimation();
+        vaisseau1.stopAnimation();
+    }
+    document.querySelector('#gameover').style.display = "block";
+
+}
+
+//victoire
+function victoiry() {
+    vaisseau1.stopAnimation();
+    vaisseau1.display == "none";
+    document.querySelector('#victoire').style.display = "block";
+}
+
+//evenement du clavier
 
 function boardEvent(event) {
+    //jouer en appuyant sur la touche entrée
+    if(event.keyCode == 13) {
+        if(document.querySelector('#accueil').display == "none") {
+            location.reload();
+        }
+        else {
+            startGame();
+        }
+        
+    }
+
     //tir missile
     if(event.keyCode == 32) {
         if(userMissile.display == "none") {
@@ -24,8 +95,23 @@ function boardEvent(event) {
             var tir;
             tir = new sound("audios/tir_missile.mp3");
             tir.play();
+            /*
+            var status = 0;
+
+            for(var i = 1 ; i <= 10 ; i++) {
+                var alien = window["ennemie" + i];
+                if(alien.display == "none") {
+                   status += 1;
+                   
+                }
+            }
+            if(status == 10) {
+                victoiry();
+            }
+            */
         }
     }
+    
 
     //deplacements
     if(event.keyCode == 37 ) { /*deplacement a gauche*/
@@ -78,27 +164,15 @@ function shootByMouse(event) {
     }
 }
 
-//Creation des ennemies
-var ennemie1 = new ObjectConstruct("images/ennemie1.png", 50, 30);
-var ennemie2 = new ObjectConstruct("images/ennemie1.png", 350, 30);
-var ennemie3 = new ObjectConstruct("images/ennemie1.png", 650, 30);
-var ennemie4 = new ObjectConstruct("images/ennemie1.png", 950, 30);
-var ennemie5 = new ObjectConstruct("images/ennemie1.png", 1250, 30);
-
-var ennemie6 = new ObjectConstruct("images/ennemie1.png", 110, 150);
-var ennemie7 = new ObjectConstruct("images/ennemie1.png", 400, 150);
-var ennemie8 = new ObjectConstruct("images/ennemie1.png", 700, 150);
-var ennemie9 = new ObjectConstruct("images/ennemie1.png", 900, 150);
-var ennemie10 = new ObjectConstruct("images/ennemie1.png", 1200, 150);
-
-
+var score = 0;
 
 function shootMissile() {
     userMissile.top -= 10;
     if(userMissile.top < -25) {
         userMissile.stopAnimation();
         userMissile.display = "none";
-    }      
+    }
+
     for(var i = 1 ; i <= 10 ; i++) {
         var alien = window["ennemie" + i];
         if(alien.display == "none") continue;
@@ -108,6 +182,10 @@ function shootMissile() {
             var y = alien.top - alien._node.height;
             
             explosion(x, y);
+
+            score += 10;
+
+            document.querySelector('#score2').innerHTML = score;
 
             var explosionSound;
 
@@ -119,12 +197,16 @@ function shootMissile() {
             alien.stopAnimation();
             alien.display = "none";
             userMissile.display = "none";
+
+            if(score == 100) {
+                victoiry();
+            }
             
         }
     } 
 }
 
-function shootAlienMissile() {
+/*function shootAlienMissile() {
 
     var alienMissile;
 
@@ -138,12 +220,15 @@ function shootAlienMissile() {
         setInterval(function() {alienMissile.startAnimation(function() {alienMissile.top += 10;}, 10);}, 3000);
 
     }
-}
+}*/
+
+var vie = 0;
 
 //Collision entre vaisseau et alien
 function collisionWithAlien() {
     for(var i = 1 ; i <= 10 ; i++) {
         var alien = window["ennemie" + i];
+        if(alien.display == "none") continue;
         if(collision(vaisseau1, alien)) {
             var x = alien.left - alien._node.width;
             var y = alien.top - alien._node.height;
@@ -158,9 +243,13 @@ function collisionWithAlien() {
             explosionSound = new sound("audios/explosion_sound.mp3");
 
             explosionSound.play();
+
+            stopGame();
         }
     } 
 }
+
+
 
 // collision entre corps1(vaisseau ou missile) et alien
 function collision(corps1, alien) {
@@ -176,22 +265,29 @@ function collision(corps1, alien) {
 //deplacement des ennemies vers la droite
 function moveEnnemiToRight(ennemi){
     ennemi.left += 3;
-    if (ennemi.left > document.body.clientWidth - ennemi._node.width) {
-      ennemi.top += 50;
-      ennemi.startAnimation( moveEnnemiToLeft, 20 );
+
+    if(ennemi.top < (document.body.clientHeight - ennemi._node.height)) {
+        if (ennemi.left > document.body.clientWidth - ennemi._node.width) {
+            ennemi.top += 50;
+            ennemi.startAnimation( moveEnnemiToLeft, 20 );
+        }
+    }
+    else {
+        stopGame();
     }
 }
   //deplacement des ennemies vers la gauche
 function moveEnnemiToLeft(ennemi){
 ennemi.left -= 3;
-    if (ennemi.left <= 0) {
-        ennemi.top += 50;
-        ennemi.startAnimation( moveEnnemiToRight, 20 );
+    if(ennemi.top < (document.body.clientHeight - ennemi._node.height)) {
+        if (ennemi.left <= 0) {
+            ennemi.top += 50;
+            ennemi.startAnimation( moveEnnemiToRight, 20 );
+        }
     }
-}
-
-for (var i = 1; i <= 10; i++) {
-    window["ennemie"+i].startAnimation(moveEnnemiToRight, 20);
+    else {
+        stopGame();
+    }
 }
 
 //Explosion 
